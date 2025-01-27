@@ -1,7 +1,0 @@
-{
-  "version": 2,
-  "routes": [
-    { "src": "/i.php", "dest": "/i.php" },
-    { "src": "/(.*)", "dest": "/i.php" }
-  ]
-}
