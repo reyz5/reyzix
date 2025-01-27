@@ -1,54 +1,38 @@
 <?php
-// Set headers for JSON response and allow all requests
+// Set headers for JSON response and allow POST requests
 header("Content-Type: text/html; charset=UTF-8");
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST");
+header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-// Create a response template
-$response = [
-    "key" => "REYZIX LHWAY",
-    "UUID" => "2DE30CF2-D125-4E60-8735-FC05852A89B0",
-    "time" => date("Y-m-d H:i:s"), // Current server time
-    "agent" => "Free%20Fire/2019117860 CFNetwork/1399 Darwin/22.1.0",
-    "amount" => "777777777 REYZIX",
-    "status" => "heheheboy"
-];
-
-// Check if the method is GET or POST
+// Check if the request method is POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get the raw JSON input (if needed)
+    // Get the raw JSON input
     $inputData = json_decode(file_get_contents("php://input"), true);
 
-    // Validate key in the POST request
-    if (isset($inputData['key']) && $inputData['key'] === 'KYOJIN LKING') {
-        $response["message"] = "Verification successful! Data received via POST.";
-        
-        // Optionally add input data in the response
-        $response["input"] = $inputData;
-    } else {
-        // If the key is not correct
-        $response["message"] = "Verification failed. Invalid key.";
+    // Validate input data (optional)
+    if (empty($inputData)) {
+        http_response_code(400); // Bad Request
+        echo json_encode(["message" => "Invalid or empty JSON data provided."]);
+        exit;
     }
 
-    // Send the JSON response for POST
+    // Create a response
+    $response = [
+        "key" => "KYOJIN LKING",
+        "ip" => "2a02:aee3f:aaaa:c101:2993:rr3c:dc87:0000, 000.000.000.000",
+        "UUID" => "2DE30CF2-D125-4E60-8735-FC05852A89B0",
+        "time" => date("Y-m-d H:i:s"), // Current server time
+        "agent" => "Free%20Fire/2019117860 CFNetwork/1399 Darwin/22.1.0",
+        "amount" => "99999999999 KYOJIN",
+        "status" => "heheheboy",
+        "received_data" => $inputData // Echo back the received POST data
+    ];
+
+    // Send the JSON response
     echo json_encode($response);
-
-} elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    // Check for key in GET request (if it's passed in the query string)
-    if (isset($_GET['key']) && $_GET['key'] === 'KYOJIN LKING') {
-        $response["message"] = "Verification successful! Data received via GET.";
-    } else {
-        // If the key is not correct
-        $response["message"] = "Verification failed. Invalid key.";
-    }
-
-    // Respond to GET requests
-    echo json_encode($response);
-
 } else {
-    // If method is neither GET nor POST
-    http_response_code(405); // Method Not Allowed
-    echo json_encode(["message" => "Only GET and POST requests are allowed."]);
+    // If the method is not POST, return a 405 Method Not Allowed error
+    http_response_code(405);
+    echo json_encode(["message" => "Only POST requests are allowed."]);
 }
-?>
